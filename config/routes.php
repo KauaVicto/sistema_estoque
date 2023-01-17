@@ -13,6 +13,7 @@ return function (App $app) {
     $app->get('/produtos', function (ServerRequestInterface $request, ResponseInterface $response) {
         require_once __DIR__ . "/../bootstrap.php";
 
+
         $productRepository = $entityManager->getRepository('App\Produto');
         $produtos = $productRepository->findAll();
 

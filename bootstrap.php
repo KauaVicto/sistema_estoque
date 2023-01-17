@@ -32,10 +32,10 @@ $config = ORMSetup::createAttributeMetadataConfiguration(
 $connection = DriverManager::getConnection([
     'driver' => 'pdo_pgsql',
     'path' => __DIR__ . '/../../var/data/banco.sql',
-    'dbname' => 'teste_doctrine',
-    'user' => 'postgres',
-    'password' => '221122',
-    'host' => 'localhost',
+    'dbname' => $_ENV['DBNAME'],
+    'user' => $_ENV['USER'],
+    'password' => $_ENV['PASS'],
+    'host' => $_ENV['HOST'],
 ], $config);
 
 // obtaining the entity manager
