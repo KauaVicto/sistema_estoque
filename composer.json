@@ -9,6 +9,10 @@
         "nyholm/psr7": "^1.5",
         "nyholm/psr7-server": "^1.0",
         "php-di/php-di": "^6.4",
-        "slim/http": "^0.4.0"
+        "slim/http": "^0.4.0",
+        "doctrine/orm": "^2.14",
+        "symfony/cache": "^6.2",
+        "doctrine/annotations": "1.14",
+        "doctrine/dbal": "^3.5"
     }
 }
