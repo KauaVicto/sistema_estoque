@@ -1,13 +1,17 @@
 <?php
 
 namespace App\Helper;
+require_once "vendor/autoload.php";
 
 // bootstrap.php
 use Doctrine\DBAL\DriverManager;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\ORMSetup;
+use Dotenv\Dotenv;
 
-require_once "vendor/autoload.php";
+$dotenv = Dotenv::createUnsafeImmutable(__DIR__);
+$dotenv->load();
+
 
 // Create a simple "default" Doctrine ORM configuration for Attributes
 $config = ORMSetup::createAttributeMetadataConfiguration(
@@ -31,11 +35,11 @@ $config = ORMSetup::createAttributeMetadataConfiguration(
 // configuring the database connection
 $connection = DriverManager::getConnection([
     'driver' => 'pdo_pgsql',
-    'path' => __DIR__ . '/../../var/data/banco.sql',
     'dbname' => $_ENV['DBNAME'],
     'user' => $_ENV['USER'],
     'password' => $_ENV['PASS'],
     'host' => $_ENV['HOST'],
+    'port' => $_ENV['PORT'],
 ], $config);
 
 // obtaining the entity manager
