@@ -4,8 +4,8 @@ namespace App\Entity;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity]
-#[ORM\Table(name: 'cadastro.tbacessos')]
-class Acesso
+#[ORM\Table(name: 'cadastro.tbusuarios')]
+class Usuario
 {
     #[ORM\Id]
     #[ORM\Column(type: 'integer')]
@@ -18,22 +18,37 @@ class Acesso
     #[ORM\Column(type: 'string', length:32, nullable:False)]
     private string $senha;
     
-    #[ORM\ManyToOne(targetEntity: Pessoa::class, inversedBy: 'setPessoa')]
+    #[ORM\OneToOne(targetEntity: Pessoa::class, inversedBy: 'setPessoa')]
+    #[ORM\JoinColumn(onDelete: 'CASCADE')]
     private Pessoa|null $pessoa = null;
 
     public function setPessoa(Pessoa $pessoa)
     {
         $this->pessoa = $pessoa;
-        $pessoa->acessoPessoa($this);
+        $pessoa->usuarioPessoa($this);
     }
 
     public function getId()
     {
         return $this->id;
     }
-    public function setId($id)
+
+    public function getUsuario()
     {
-        $this->id = $id;
+        return $this->usuario;
+    }
+    public function setUsuario($usuario)
+    {
+        $this->usuario = $usuario;
+    }
+
+    public function getSenha()
+    {
+        return $this->senha;
+    }
+    public function setSenha($senha)
+    {
+        $this->senha = $senha;
     }
 
 
