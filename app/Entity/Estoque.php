@@ -1,5 +1,5 @@
 <?php
-namespace App;
+namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 
@@ -9,7 +9,8 @@ class Estoque
 {
     #[ORM\Id]
     #[ORM\Column(type: 'integer')]
-    #[ORM\GeneratedValue]
+    #[ORM\GeneratedValue(strategy: 'IDENTITY')]
+    #[ORM\SequenceGenerator(sequenceName:"id", initialValue:250000)]
     private int|null $id = null;
     #[ORM\Column(type: 'decimal')]
     private string $quantidade;

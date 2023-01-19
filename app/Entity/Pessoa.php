@@ -1,5 +1,5 @@
 <?php
-namespace App;
+namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 
@@ -9,7 +9,8 @@ class Pessoa
 {
     #[ORM\Id]
     #[ORM\Column(type: 'integer')]
-    #[ORM\GeneratedValue]
+    #[ORM\GeneratedValue(strategy: 'IDENTITY')]
+    #[ORM\SequenceGenerator(sequenceName:"id", initialValue:250000)]
     private int|null $id = null;
     #[ORM\Column(type: 'string', length:65, nullable:False)]
     private string $nome;
@@ -18,27 +19,26 @@ class Pessoa
     #[ORM\Column(type: 'string', length:11, nullable:False)]
     private string $cpf;
 
-    private Estoque $estoque;
+    private Acesso $acesso;
     
-    public function __construct($nome, $data_nasc, $cpf)
+    
+    public function acessoPessoa(Acesso $acesso)
     {
-        $this->nome = $nome;
-        $this->data_nasc = $data_nasc;
-        $this->cpf = $cpf;
-    }
-
-    public function acessoPessoa(Estoque $estoque)
-    {
-        $this->estoque = $estoque;
+        $this->acesso = $acesso;
     }
 
     public function getId()
     {
         return $this->id;
     }
-    public function setId($id)
+
+    public function getNome()
     {
-        $this->id = $id;
+        return $this->nome;
+    }
+    public function setNome($nome)
+    {
+        $this->nome = $nome;
     }
 
     public function getData_Nasc()
