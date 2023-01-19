@@ -22,10 +22,16 @@ class Pessoa
     private string $cpf;
 
     private Usuario $usuario;
+    private array $tokens;
 
     public function usuarioPessoa(Usuario $usuario)
     {
         $this->usuario = $usuario;
+    }
+
+    public function tokenPessoa(Token $token)
+    {
+        $this->tokens[] = $token;
     }
 
     public function getId()
