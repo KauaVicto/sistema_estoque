@@ -13,19 +13,26 @@ class Usuario
     #[ORM\SequenceGenerator(sequenceName:"id", initialValue:250000)]
     private int|null $id = null;
 
-    #[ORM\Column(type: 'string', length:65, nullable:False)]
+    #[ORM\Column(type: 'string', length:65, nullable:False, unique:True)]
     private string $usuario;
-    #[ORM\Column(type: 'string', length:32, nullable:False)]
+    #[ORM\Column(type: 'string', length:96, nullable:False)]
     private string $senha;
     
-    #[ORM\OneToOne(targetEntity: Pessoa::class, inversedBy: 'setPessoa')]
-    #[ORM\JoinColumn(onDelete: 'CASCADE')]
+    #[ORM\OneToOne(targetEntity: Pessoa::class)]
+    #[ORM\JoinColumn(name: 'pessoa_id', referencedColumnName: 'id')]
     private Pessoa|null $pessoa = null;
 
-    public function setPessoa(Pessoa $pessoa)
+    #[ORM\OneToMany(targetEntity: Token::class, mappedBy: 'usuario')]
+    private \Doctrine\Common\Collections\Collection $token;
+
+    public function usuarioToken(Token $token)
+    {
+        $this->token[] = $token;
+    }
+
+    public function setPessoa(Pessoa|null $pessoa)
     {
         $this->pessoa = $pessoa;
-        $pessoa->usuarioPessoa($this);
     }
 
     public function getId()
@@ -37,7 +44,7 @@ class Usuario
     {
         return $this->usuario;
     }
-    public function setUsuario($usuario)
+    public function setUsuario(string $usuario)
     {
         $this->usuario = $usuario;
     }
@@ -46,7 +53,7 @@ class Usuario
     {
         return $this->senha;
     }
-    public function setSenha($senha)
+    public function setSenha(string $senha)
     {
         $this->senha = $senha;
     }
