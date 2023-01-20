@@ -78,7 +78,7 @@ class Produto
 
     public function serialize(){
         return get_object_vars ($this);
-    }  
+    }
 
 
 }

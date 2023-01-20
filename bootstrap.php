@@ -1,6 +1,5 @@
 <?php
 
-namespace App\Helper;
 require_once "vendor/autoload.php";
 
 // bootstrap.php

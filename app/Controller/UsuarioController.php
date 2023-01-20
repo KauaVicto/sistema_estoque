@@ -6,30 +6,58 @@ use DateTime;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Doctrine\DBAL\Exception;
+use Firebase\JWT\JWT;
 
 class UsuarioController extends Controller
 {
-    public function insert(ServerRequestInterface $request, ResponseInterface $response)
+    public function login(ServerRequestInterface $request, ResponseInterface $response)
     {
         require_once __DIR__ . "/../../bootstrap.php";
 
         try {
+
             $params = $request->getParsedBody();
 
-            $pessoa = new \App\Entity\Pessoa();
-            $pessoa->setNome($params['nome']);
-            $pessoa->setCpf($params['cpf']);
+            $usuarioRepository = $entityManager->getRepository('App\Entity\Usuario');
+            $usuario = $usuarioRepository->findBy(['usuario' => $params['usuario']], limit: 1);
 
-            $objDateTime = new DateTime($params['data_nasc']);
+            /* Verifica se o usuário existe */
+            if (count($usuario) == 0) {
+                return self::view(['msg' => 'Usuario nao encontrado'], $response, 401);
+            }
             
-            $pessoa->setData_Nasc($objDateTime);
+            $objUsuario = $usuario[0];
             
-            $entityManager->persist($pessoa);
-            $entityManager->flush();
+            /* Verifica se a senha está correta */
+            if (!password_verify($params['senha'], $objUsuario->getSenha())) {
+                return self::view(['msg' => 'Senha Incorreta'], $response, 401);
+            }
+            
+            /* Gera o token de acesso */
+            $expiredAt = (new DateTime())->modify('+2 days')->format('Y-m-d H:i:s');
+            
+            $tokenPayload = [
+                'sub' => $objUsuario->getId(),
+                'user' => $objUsuario->getUsuario(),
+                'expired_at' => $expiredAt,
+            ];
 
-            return self::view(['id' => $pessoa->getId()], $response, 201);
+            $token = JWT::encode($tokenPayload, $_ENV['JWT_SECRET_KEY']);
+            $refreshTokenPayload = [
+                'user' => $objUsuario->getUsuario()
+            ];
+            $refreshToken = JWT::encode($refreshTokenPayload, $_ENV['JWT_SECRET_KEY']);
+
+            \App\Model\Token::saveToken([
+                'token' => $token,
+                'refresh_token' => $refreshToken,
+                'expired_at' => $expiredAt,
+                'usuario' => $objUsuario->getId()
+            ]);
+
+            
         } catch (Exception $e) {
-            return self::view(['error' => $e->getMessage()], $response, 409);
+            return self::view(['error' => $e->getMessage()], $response, 401);
         }
     }
 }

@@ -10,35 +10,7 @@ use App\Utils\Utils;
 
 class PessoaController extends Controller
 {
-    public function show(ServerRequestInterface $request, ResponseInterface $response)
-    {
-        require_once __DIR__ . "/../../bootstrap.php";
-
-        $productRepository = $entityManager->getRepository('App\Entity\Produto');
-        $produtos = $productRepository->findBy([], ['id' => 'ASC']);
-
-        $produtosArray = array_map(function ($e) {
-            return $e->serialize();
-        }, $produtos);
-
-        return self::view($produtosArray, $response, 200);
-    }
-
-    public function find(ServerRequestInterface $request, ResponseInterface $response, $args)
-    {
-        require_once __DIR__ . "/../../bootstrap.php";
-
-        $produto = $entityManager->find('App\Entity\Produto', $args['id']);
-
-        if (!is_null($produto)) {
-            $produtoArray = $produto->serialize();
-        } else {
-            $produtoArray = [];
-        }
-
-        return self::view($produtoArray, $response, 200);
-    }
-
+    
     public function insert(ServerRequestInterface $request, ResponseInterface $response)
     {
         require_once __DIR__ . "/../../bootstrap.php";
@@ -69,7 +41,7 @@ class PessoaController extends Controller
             $usuarioCompleto = strtolower($usuarioNomeSemAcento) . "_" . str_pad($pessoa->getId(), 3, '0', STR_PAD_LEFT);
 
             $usuario->setUsuario($usuarioCompleto);
-            $usuario->setSenha(md5($params['cpf']));
+            $usuario->setSenha(password_hash($params['cpf'], PASSWORD_ARGON2I));
             $usuario->setPessoa($pessoa);
 
             $entityManager->persist($usuario);

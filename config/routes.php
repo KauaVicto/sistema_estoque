@@ -6,6 +6,8 @@ use Slim\App;
 
 return function (App $app) {
 
+    $app->post('/login', 'App\Controller\UsuarioController:login');
+
     $app->group('/produtos', function (RouteCollectorProxy $group) {
         $group->get('', 'App\Controller\ProdutoController:show');
         $group->get('/{id:[0-9]+}', 'App\Controller\ProdutoController:find');
