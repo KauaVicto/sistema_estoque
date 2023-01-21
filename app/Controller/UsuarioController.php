@@ -45,7 +45,8 @@ class UsuarioController extends Controller
 
             $token = JWT::encode($tokenPayload, $_ENV['JWT_SECRET_KEY']);
             $refreshTokenPayload = [
-                'user' => $objUsuario->getUsuario()
+                'user' => $objUsuario->getUsuario(),
+                'random' => uniqid()
             ];
             $refreshToken = JWT::encode($refreshTokenPayload, $_ENV['JWT_SECRET_KEY']);
 
