@@ -21,8 +21,6 @@ class Pessoa
     #[ORM\Column(type: 'string', length: 11, nullable: False, unique: True)]
     private string $cpf;
 
-    #[ORM\OneToOne(targetEntity: Usuario::class, mappedBy: "pessoa")]
-    private Usuario|null $usuario;
 
     public function getId()
     {
