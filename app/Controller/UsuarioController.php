@@ -35,7 +35,7 @@ class UsuarioController extends Controller
             }
 
             /* Gera o token de acesso */
-            $expiredAt = (new DateTime())->modify('+2 days')->format('Y-m-d H:i:s');
+            $expiredAt = (new DateTime())->modify('+30 seconds')->format('Y-m-d H:i:s');
 
             $tokenPayload = [
                 'sub' => $objUsuario->getId(),
@@ -44,33 +44,11 @@ class UsuarioController extends Controller
             ];
 
             $token = JWT::encode($tokenPayload, $_ENV['JWT_SECRET_KEY']);
-            $refreshTokenPayload = [
-                'user' => $objUsuario->getUsuario(),
-                'random' => uniqid()
-            ];
-            $refreshToken = JWT::encode($refreshTokenPayload, $_ENV['JWT_SECRET_KEY']);
 
-            $objToken = new \App\Entity\Token();
-            $objToken->setToken($token);
-            $objToken->setRefreshToken($refreshToken);
-            $objToken->setExpiredAt((new DateTime($expiredAt)));
-            $objToken->setUsuario($objUsuario);
-
-            $entityManager->persist($objToken);
-            $entityManager->flush();
 
             return self::view([
-                'token' => $token,
-                'refresh_token' => $refreshToken,
-<<<<<<< HEAD
-                'expired_at' => $expiredAt,
-                'usuario' => $objUsuario->getId()
-            ], $objUsuario);
-
-            
-=======
+                'token' => $token
             ], $response, 200);
->>>>>>> a043b4962ad991cebe57bfaa8435b117bedc90ba
         } catch (Exception $e) {
             return self::view(['error' => $e->getMessage()], $response, 401);
         }

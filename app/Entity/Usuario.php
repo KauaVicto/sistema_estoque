@@ -23,13 +23,6 @@ class Usuario
     #[ORM\JoinColumn(name: 'pessoa_id', referencedColumnName: 'id')]
     private Pessoa|null $pessoa = null;
 
-    #[ORM\OneToMany(targetEntity: Token::class, mappedBy: 'usuario', cascade:['persist'])]
-    private Collection $tokens;
-
-    public function tokenUsuario(Token $token)
-    {
-        $this->tokens[] = $token;
-    }
 
     public function setPessoa(Pessoa $pessoa)
     {
