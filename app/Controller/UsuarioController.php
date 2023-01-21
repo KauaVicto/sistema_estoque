@@ -35,7 +35,7 @@ class UsuarioController extends Controller
             }
 
             /* Gera o token de acesso */
-            $expiredAt = (new DateTime())->modify('+30 seconds')->format('Y-m-d H:i:s');
+            $expiredAt = (new DateTime())->modify('+7 days')->format('Y-m-d H:i:s');
 
             $tokenPayload = [
                 'sub' => $objUsuario->getId(),
