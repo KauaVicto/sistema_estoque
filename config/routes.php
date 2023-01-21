@@ -1,19 +1,21 @@
 <?php
 
 use App\Middlewares\JWTAuth;
+use Nyholm\Psr7\Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Http\Server\RequestHandlerInterface as RequestHandler;
 use Slim\Factory\AppFactory;
-use Slim\Http\Response;
+
 
 use Slim\Routing\RouteCollectorProxy;
 use Slim\App;
-use Tuupola\Middleware\JwtAuthentication;
 
 return function (App $app) {
 
 
     $app->post('/login', 'App\Controller\UsuarioController:login');
+
+    $app->post('/login/verificar', 'App\Controller\UsuarioController:verificarLogin');
 
     $app->group('/produtos', function (RouteCollectorProxy $group) {
         $group->get('', 'App\Controller\ProdutoController:show');
@@ -25,13 +27,7 @@ return function (App $app) {
 
         $group->put('/alterar/{id:[0-9]+}', 'App\Controller\ProdutoController:update');
     })
-        ->add(new JWTAuth())
-        ->add(
-            new JwtAuthentication([
-                'secret' => $_ENV['JWT_SECRET_KEY'],
-                'attribute' => 'jwt'
-            ])
-        );;
+        ->add('App\Middlewares\JWTAuth:jwtVerify');
 
     $app->group('/pessoa', function (RouteCollectorProxy $group) {
         $group->post('/cadastrar', 'App\Controller\PessoaController:insert');

@@ -35,15 +35,16 @@ class UsuarioController extends Controller
             }
 
             /* Gera o token de acesso */
-            $expiredAt = (new DateTime())->modify('+7 days')->format('Y-m-d H:i:s');
 
             $tokenPayload = [
                 'sub' => $objUsuario->getId(),
                 'user' => $objUsuario->getUsuario(),
-                'exp' => $expiredAt,
+                'nivel_acesso' => $objUsuario->getNivelAcesso(),
+                'exp' => time() + 10000,
+                'iat' => time()
             ];
 
-            $token = JWT::encode($tokenPayload, $_ENV['JWT_SECRET_KEY']);
+            $token = JWT::encode($tokenPayload, $_ENV['JWT_SECRET_KEY'], 'HS256');
 
 
             return self::view([
@@ -52,5 +53,15 @@ class UsuarioController extends Controller
         } catch (Exception $e) {
             return self::view(['error' => $e->getMessage()], $response, 401);
         }
+    }
+
+    /**
+     * Método responsável por verificar se a pessoa logada
+     */
+    public function verificarLogin(ServerRequestInterface $request, ResponseInterface $response)
+    {
+        $request->getHeader('Authrization');
+
+        return self::view(['msg' => 'O usuário está logado'], $response, 200);
     }
 }

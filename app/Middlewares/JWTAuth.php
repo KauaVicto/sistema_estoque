@@ -3,27 +3,29 @@
 namespace App\Middlewares;
 
 use DateTime;
-use Firebase\JWT\ExpiredException;
 use Nyholm\Psr7\Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Http\Server\RequestHandlerInterface as RequestHandler;
+use Tuupola\Middleware\JwtAuthentication;
+use Firebase\JWT\JWT;
 
 class JWTAuth extends \App\Controller\Controller
 {
 
-    public function __invoke(Request $request, RequestHandler $handler)
+    public function jwtVerify(Request $request, RequestHandler $handler)
     {
-        $token = $request->getAttribute('jwt');
-        $expDate = new DateTime($token['exp']);
-        $nowDate = new DateTime('now');
+        $authToken = $request->getHeader('Authorization');
 
-        if ($expDate < $nowDate){
+        try {
+            $token = str_replace('Bearer ', '', $authToken[0]);
+            $decoded = JWT::decode($token, $_ENV['JWT_SECRET_KEY'], ['HS256']);
+
+            $response = $handler->handle($request);
+
+            return $response;
+        } catch (\Throwable $e) {
             $response = new Response();
-            return self::view(['msg' => 'O token de acesso expirou'], $response, 401);
+            return self::view(['msg' => $e->getMessage()], $response, 401);
         }
-
-        $response = $handler->handle($request);
-
-        return $response;
     }
 }

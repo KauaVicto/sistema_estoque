@@ -2,7 +2,6 @@
 
 require_once "vendor/autoload.php";
 
-// bootstrap.php
 use Doctrine\DBAL\DriverManager;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\ORMSetup;
@@ -12,26 +11,13 @@ $dotenv = Dotenv::createUnsafeImmutable(__DIR__);
 $dotenv->load();
 
 
-// Create a simple "default" Doctrine ORM configuration for Attributes
+// Cria uma configuração padrão
 $config = ORMSetup::createAttributeMetadataConfiguration(
     paths: array(__DIR__."/app"),
     isDevMode: true,
 );
-// or if you prefer annotation, YAML or XML
-// $config = ORMSetup::createAnnotationMetadataConfiguration(
-//    paths: array(__DIR__."/src"),
-//    isDevMode: true,
-// );
-// $config = ORMSetup::createXMLMetadataConfiguration(
-//    paths: array(__DIR__."/config/xml"),
-//    isDevMode: true,
-//);
-// $config = ORMSetup::createYAMLMetadataConfiguration(
-//    paths: array(__DIR__."/config/yaml"),
-//    isDevMode: true,
-// );
 
-// configuring the database connection
+// configura a conexão
 $connection = DriverManager::getConnection([
     'driver' => 'pdo_pgsql',
     'dbname' => $_ENV['DBNAME'],
@@ -41,5 +27,5 @@ $connection = DriverManager::getConnection([
     'port' => $_ENV['PORT'],
 ], $config);
 
-// obtaining the entity manager
+// instancia o entity Manager
 $entityManager = new EntityManager($connection, $config);

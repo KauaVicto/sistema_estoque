@@ -18,6 +18,8 @@ class Usuario
     private string $usuario;
     #[ORM\Column(type: 'string', length:96, nullable:False)]
     private string $senha;
+    #[ORM\Column(type: 'integer', precision:1, nullable:False)]
+    private string $nivel_acesso;
 
     #[ORM\OneToOne(targetEntity: Pessoa::class)]
     #[ORM\JoinColumn(name: 'pessoa_id', referencedColumnName: 'id')]
@@ -51,6 +53,15 @@ class Usuario
     public function setSenha(string $senha)
     {
         $this->senha = $senha;
+    }
+
+    public function getNivelAcesso()
+    {
+        return $this->nivel_acesso;
+    }
+    public function setNivelAcesso(string $nivel_acesso)
+    {
+        $this->nivel_acesso = $nivel_acesso;
     }
 
 
