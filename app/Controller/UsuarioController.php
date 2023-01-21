@@ -40,7 +40,7 @@ class UsuarioController extends Controller
             $tokenPayload = [
                 'sub' => $objUsuario->getId(),
                 'user' => $objUsuario->getUsuario(),
-                'expired_at' => $expiredAt,
+                'exp' => $expiredAt,
             ];
 
             $token = JWT::encode($tokenPayload, $_ENV['JWT_SECRET_KEY']);
@@ -48,7 +48,7 @@ class UsuarioController extends Controller
 
             return self::view([
                 'token' => $token
-            ], $response, 200);
+            ], $response, 201);
         } catch (Exception $e) {
             return self::view(['error' => $e->getMessage()], $response, 401);
         }
