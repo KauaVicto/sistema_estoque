@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Entity\Usuario;
 use DateTime;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -25,17 +26,17 @@ class UsuarioController extends Controller
             if (count($usuario) == 0) {
                 return self::view(['msg' => 'Usuario nao encontrado'], $response, 401);
             }
-            
+
             $objUsuario = $usuario[0];
-            
+
             /* Verifica se a senha está correta */
             if (!password_verify($params['senha'], $objUsuario->getSenha())) {
                 return self::view(['msg' => 'Senha Incorreta'], $response, 401);
             }
-            
+
             /* Gera o token de acesso */
             $expiredAt = (new DateTime())->modify('+2 days')->format('Y-m-d H:i:s');
-            
+
             $tokenPayload = [
                 'sub' => $objUsuario->getId(),
                 'user' => $objUsuario->getUsuario(),
@@ -44,18 +45,32 @@ class UsuarioController extends Controller
 
             $token = JWT::encode($tokenPayload, $_ENV['JWT_SECRET_KEY']);
             $refreshTokenPayload = [
-                'user' => $objUsuario->getUsuario()
+                'user' => $objUsuario->getUsuario(),
+                'random' => uniqid()
             ];
             $refreshToken = JWT::encode($refreshTokenPayload, $_ENV['JWT_SECRET_KEY']);
 
-            \App\Model\Token::saveToken([
+            $objToken = new \App\Entity\Token();
+            $objToken->setToken($token);
+            $objToken->setRefreshToken($refreshToken);
+            $objToken->setExpiredAt((new DateTime($expiredAt)));
+            $objToken->setUsuario($objUsuario);
+
+            $entityManager->persist($objToken);
+            $entityManager->flush();
+
+            return self::view([
                 'token' => $token,
                 'refresh_token' => $refreshToken,
+<<<<<<< HEAD
                 'expired_at' => $expiredAt,
                 'usuario' => $objUsuario->getId()
             ], $objUsuario);
 
             
+=======
+            ], $response, 200);
+>>>>>>> a043b4962ad991cebe57bfaa8435b117bedc90ba
         } catch (Exception $e) {
             return self::view(['error' => $e->getMessage()], $response, 401);
         }

@@ -1,6 +1,7 @@
 <?php
 namespace App\Entity;
 
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity]
@@ -17,23 +18,24 @@ class Usuario
     private string $usuario;
     #[ORM\Column(type: 'string', length:96, nullable:False)]
     private string $senha;
-    
+
     #[ORM\OneToOne(targetEntity: Pessoa::class)]
     #[ORM\JoinColumn(name: 'pessoa_id', referencedColumnName: 'id')]
     private Pessoa|null $pessoa = null;
 
-    #[ORM\OneToMany(targetEntity: Token::class, mappedBy: 'usuario')]
-    private \Doctrine\Common\Collections\Collection $token;
+    #[ORM\OneToMany(targetEntity: Token::class, mappedBy: 'usuario', cascade:['persist'])]
+    private Collection $tokens;
 
-    public function usuarioToken(Token $token)
+    public function tokenUsuario(Token $token)
     {
-        $this->token[] = $token;
+        $this->tokens[] = $token;
     }
 
-    public function setPessoa(Pessoa|null $pessoa)
+    public function setPessoa(Pessoa $pessoa)
     {
         $this->pessoa = $pessoa;
     }
+
 
     public function getId()
     {

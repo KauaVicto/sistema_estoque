@@ -25,14 +25,23 @@ class Token
     #[ORM\Column(type: 'datetime', nullable: False)]
     private DateTime $expired_at;
 
+<<<<<<< HEAD
     #[ORM\ManyToOne(targetEntity: Usuario::class, inversedBy:'token')]
     #[ORM\JoinColumn(name: 'usuario_id', referencedColumnName: 'id', onDelete:'CASCADE', nullable:False)]
     private Usuario $usuario;
+=======
+    #[ORM\ManyToOne(targetEntity: Usuario::class, inversedBy: 'tokenUsuario')]
+    private Usuario|null $usuario = null;
+>>>>>>> a043b4962ad991cebe57bfaa8435b117bedc90ba
 
     public function setUsuario(Usuario $usuario)
     {
+        $usuario->tokenUsuario($this);
         $this->usuario = $usuario;
-        $usuario->usuarioToken($this);
+    }
+    public function getUsuario()
+    {
+        return $this->usuario;
     }
 
     public function getToken()
