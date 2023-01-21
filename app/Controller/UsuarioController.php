@@ -53,7 +53,7 @@ class UsuarioController extends Controller
                 'refresh_token' => $refreshToken,
                 'expired_at' => $expiredAt,
                 'usuario' => $objUsuario->getId()
-            ]);
+            ], $objUsuario);
 
             
         } catch (Exception $e) {

@@ -7,13 +7,11 @@ use DateTime;
 class Token extends Connection
 {
 
-    public static function saveToken(array $data)
+    public static function saveToken(array $data, \App\Entity\Usuario $usuario)
     {
         $entityManager = self::connect();
 
-
-        $objUsuario = Usuario::findUsuario($data['usuario']);
-        $objUsuario->setPessoa(null);
+        //$objUsuario = Usuario::findUsuario($data['usuario']);
 
         $objDate = new DateTime($data['expired_at']);
 
@@ -21,7 +19,7 @@ class Token extends Connection
         $objToken->setToken($data['token']);
         $objToken->setRefreshToken($data['refresh_token']);
         $objToken->setExpiredAt($objDate);
-        $objToken->setUsuario($objUsuario);
+        $objToken->setUsuario($usuario);
 
         $entityManager->persist($objToken);
         $entityManager->flush();
