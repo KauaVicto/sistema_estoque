@@ -16,7 +16,7 @@ class JWTAuth extends \App\Controller\Controller
 
         try {
             $token = str_replace('Bearer ', '', $authToken[0]);
-            $decoded = JWT::decode($token, $_ENV['JWT_SECRET_KEY'], ['HS256']);
+            $decoded = JWT::decode($token, $_ENV['SECRET_KEY'], ['HS256']);
 
             $response = $handler->handle($request);
 

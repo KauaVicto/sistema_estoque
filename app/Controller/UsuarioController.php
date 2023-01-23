@@ -44,7 +44,7 @@ class UsuarioController extends Controller
                 'iat' => time()
             ];
 
-            $token = JWT::encode($tokenPayload, $_ENV['JWT_SECRET_KEY'], 'HS256');
+            $token = JWT::encode($tokenPayload, $_ENV['SECRET_KEY'], 'HS256');
 
 
             return self::view([
