@@ -32,7 +32,22 @@ class UsuarioController extends Controller
                 return self::view(['msg' => 'SENHA INCORRETA'], $response, 401);
             }
 
+<<<<<<< HEAD
             $token = AuthJwt::generateToken($objUsuario->getId());
+=======
+            /* Gera o token de acesso */
+
+            $tokenPayload = [
+                'sub' => $objUsuario->getId(),
+                'user' => $objUsuario->getUsuario(),
+                'nivel_acesso' => $objUsuario->getNivelAcesso(),
+                'exp' => time() + 10000,
+                'iat' => time()
+            ];
+
+            $token = JWT::encode($tokenPayload, $_ENV['SECRET_KEY'], 'HS256');
+
+>>>>>>> 0c53bf49f75d17bc76d2bb52bebf52e24eed1abb
 
             return self::view([
                 'token' => $token
