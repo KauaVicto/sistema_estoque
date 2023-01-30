@@ -9,7 +9,10 @@ use Doctrine\DBAL\Exception;
 
 class ProdutoController extends Controller
 {
-    public function show(ServerRequestInterface $request, ResponseInterface $response)
+    /**
+     * Método responsável por retornar todos os produtos do banco de dados
+     */
+    public function showAll(ServerRequestInterface $request, ResponseInterface $response)
     {
         require_once __DIR__ . "/../../bootstrap.php";
 
@@ -23,7 +26,10 @@ class ProdutoController extends Controller
         return self::view($produtosArray, $response, 200);
     }
 
-    public function find(ServerRequestInterface $request, ResponseInterface $response, $args)
+    /**
+     * Método responsável por retornar um produto pelo seu id
+     */
+    public function findById(ServerRequestInterface $request, ResponseInterface $response, $args)
     {
         require_once __DIR__ . "/../../bootstrap.php";
 
@@ -38,6 +44,9 @@ class ProdutoController extends Controller
         return self::view($produtoArray, $response, 200);
     }
 
+    /**
+     * Método responsável por inserir um produto no banco de dados
+     */
     public function insert(ServerRequestInterface $request, ResponseInterface $response)
     {
         require_once __DIR__ . "/../../bootstrap.php";
@@ -61,6 +70,9 @@ class ProdutoController extends Controller
         }
     }
 
+    /**
+     * Método responsável por alterar um produto no banco de dados
+     */
     public function update(ServerRequestInterface $request, ResponseInterface $response, $args)
     {
         require_once __DIR__ . "/../../bootstrap.php";

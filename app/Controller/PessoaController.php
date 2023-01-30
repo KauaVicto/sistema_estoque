@@ -15,7 +15,6 @@ class PessoaController extends Controller
     {
         require_once __DIR__ . "/../../bootstrap.php";
 
-
         try {
 
             $params = $request->getParsedBody();

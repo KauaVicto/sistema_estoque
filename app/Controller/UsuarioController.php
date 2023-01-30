@@ -2,12 +2,10 @@
 
 namespace App\Controller;
 
-use App\Entity\Usuario;
-use DateTime;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Doctrine\DBAL\Exception;
-use Firebase\JWT\JWT;
+use App\Autentication\AuthJwt;
 
 class UsuarioController extends Controller
 {
@@ -24,28 +22,17 @@ class UsuarioController extends Controller
 
             /* Verifica se o usuário existe */
             if (count($usuario) == 0) {
-                return self::view(['msg' => 'Usuario nao encontrado'], $response, 401);
+                return self::view(['msg' => 'USUARIO NÃO ENCONTRADO'], $response, 401);
             }
 
             $objUsuario = $usuario[0];
 
             /* Verifica se a senha está correta */
             if (!password_verify($params['senha'], $objUsuario->getSenha())) {
-                return self::view(['msg' => 'Senha Incorreta'], $response, 401);
+                return self::view(['msg' => 'SENHA INCORRETA'], $response, 401);
             }
 
-            /* Gera o token de acesso */
-
-            $tokenPayload = [
-                'sub' => $objUsuario->getId(),
-                'user' => $objUsuario->getUsuario(),
-                'nivel_acesso' => $objUsuario->getNivelAcesso(),
-                'exp' => time() + 10000,
-                'iat' => time()
-            ];
-
-            $token = JWT::encode($tokenPayload, $_ENV['JWT_SECRET_KEY'], 'HS256');
-
+            $token = AuthJwt::generateToken($objUsuario->getId());
 
             return self::view([
                 'token' => $token
@@ -60,8 +47,14 @@ class UsuarioController extends Controller
      */
     public function verificarLogin(ServerRequestInterface $request, ResponseInterface $response)
     {
-        $request->getHeader('Authrization');
+        $token = $request->getHeaderLine('Authorization');
 
-        return self::view(['msg' => 'O usuário está logado'], $response, 200);
+        $tokenSimple = str_replace('Bearer ', '', $token);
+
+        if (AuthJwt::validateToken($tokenSimple)) {
+            return self::view(['msg' => 'O usuário está logado'], $response, 200);
+        } else {
+            return self::view(['msg' => 'Token inválido'], $response, 401);
+        }
     }
 }
