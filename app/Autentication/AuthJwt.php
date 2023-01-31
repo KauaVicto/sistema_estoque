@@ -16,7 +16,7 @@ class AuthJwt
      */
     public static function generateToken($userId)
     {
-        $key = $_ENV['JWT_SECRET_KEY'];
+        $key = $_ENV['SECRET_KEY'];
 
         $payload = [
             'iss' => 'http://sistemaestoque.com.br',
@@ -35,7 +35,7 @@ class AuthJwt
      */
     public static function validateToken($token)
     {
-        $key = $_ENV['JWT_SECRET_KEY'];
+        $key = $_ENV['SECRET_KEY'];
 
         try {
             $decoded = JWT::decode($token, $key, ['HS256']);
