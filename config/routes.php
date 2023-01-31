@@ -12,7 +12,7 @@ return function (App $app) {
     $app->post('/login/verificar', 'App\Controller\UsuarioController:verificarLogin');
 
     $app->group('/produto', function (RouteCollectorProxy $group) {
-        $group->get('', 'App\Controller\ProdutoController:showAll');
+        $group->get('', 'App\Controller\ProdutoController:showAll')->setName('listar_produtos');
 
         $group->get('/{id:[0-9]+}', 'App\Controller\ProdutoController:findById');
 
