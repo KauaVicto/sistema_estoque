@@ -11,9 +11,9 @@ return function (App $app) {
         $routeContext = RouteContext::fromRequest($request);
         $route = $routeContext->getRoute();
 
-        $routes = ['listar_produtos'];
+        $routesFree = ['login', 'verifyLogin'];
 
-        if (in_array($route->getName(), $routes)) {
+        if (!in_array($route->getName(), $routesFree)) {
             $token = $request->getHeaderLine('Authorization');
             $tokenSimple = str_replace('Bearer ', '', $token);
             if (!AuthJwt::validateToken($tokenSimple)) {
