@@ -7,7 +7,7 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Doctrine\DBAL\Exception;
 
-class ProdutoController extends Controller
+class EstoqueController extends Controller
 {
     /**
      * Método responsável por retornar todos os produtos do banco de dados

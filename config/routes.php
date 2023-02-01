@@ -19,8 +19,9 @@ return function (App $app) {
 
         $group->post('/cadastrar', 'App\Controller\ProdutoController:insert')->setName('insertProduct');
 
-
         $group->put('/alterar/{id:[0-9]+}', 'App\Controller\ProdutoController:update')->setName('updateProduct');
+
+        $group->delete('/deletar/{id:[0-9]+}', 'App\Controller\ProdutoController:delete')->setName('deleteProduct');
     });
 
     $app->group('/pessoa', function (RouteCollectorProxy $group) {

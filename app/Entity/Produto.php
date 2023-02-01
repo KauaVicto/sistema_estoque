@@ -20,6 +20,8 @@ class Produto
     private float $valor;
     #[ORM\Column(type: 'string', length:13, nullable:True, unique:True)]
     private string|null $codigo_barras;
+    #[ORM\Column(type: 'decimal', precision:8, scale:2, options: ['default' => 0])]
+    private float $quantidade = 0;
 
     private array $estoques;
 
