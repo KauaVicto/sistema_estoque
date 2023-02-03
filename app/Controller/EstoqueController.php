@@ -9,43 +9,9 @@ use Doctrine\DBAL\Exception;
 
 class EstoqueController extends Controller
 {
-    /**
-     * Método responsável por retornar todos os produtos do banco de dados
-     */
-    public function showAll(ServerRequestInterface $request, ResponseInterface $response)
-    {
-        require_once __DIR__ . "/../../bootstrap.php";
-
-        $productRepository = $entityManager->getRepository('App\Entity\Produto');
-        $produtos = $productRepository->findBy([], ['id' => 'ASC']);
-
-        $produtosArray = array_map(function ($e) {
-            return $e->serialize();
-        }, $produtos);
-
-        return self::view($produtosArray, $response, 200);
-    }
 
     /**
-     * Método responsável por retornar um produto pelo seu id
-     */
-    public function findById(ServerRequestInterface $request, ResponseInterface $response, $args)
-    {
-        require_once __DIR__ . "/../../bootstrap.php";
-
-        $produto = $entityManager->find('App\Entity\Produto', $args['id']);
-
-        if (!is_null($produto)) {
-            $produtoArray = $produto->serialize();
-        } else {
-            $produtoArray = [];
-        }
-
-        return self::view($produtoArray, $response, 200);
-    }
-
-    /**
-     * Método responsável por inserir um produto no banco de dados
+     * Método responsável por inserir um estoque no banco de dados
      */
     public function insert(ServerRequestInterface $request, ResponseInterface $response)
     {
@@ -55,70 +21,61 @@ class EstoqueController extends Controller
 
             $params = $request->getParsedBody();
 
-            $produto = new \App\Entity\Produto();
-            $produto->setNome($params['nome']);
-            $produto->setDescricao($params['descricao']);
-            $produto->setValor($params['valor']);
-            $produto->setCodigoBarras($params['codigo_barras'] ?? null);
+            $produto = $entityManager->find('App\Entity\Produto', $params['produto_id']);
 
-            $entityManager->persist($produto);
+            $estoque = new \App\Entity\Estoque();
+            $estoque->setQuantidade($params['quantidade']);
+            $estoque->setValorUnidade($params['valor']);
+            $estoque->setProduto($produto);
+            $produto->setNewQuantidade($params['quantidade']);
+
+            $entityManager->persist($estoque);
             $entityManager->flush();
 
-            return self::view(['id' => $produto->getId()], $response, 201);
+            return self::view(['id' => $estoque->getId()], $response, 201);
         } catch (Exception $e) {
             return self::view(['error' => $e->getMessage()], $response, 409);
         }
     }
 
-    /**
-     * Método responsável por alterar um produto no banco de dados
-     */
-    public function update(ServerRequestInterface $request, ResponseInterface $response, $args)
+    public function showAll(ServerRequestInterface $request, ResponseInterface $response)
     {
         require_once __DIR__ . "/../../bootstrap.php";
 
-        try {
-            $params = $request->getParsedBody();
-            $produtoId = $args['id'];
+        $estoqueRepository = $entityManager->getRepository('App\Entity\Estoque');
+        $estoques = $estoqueRepository->findBy([], ['id' => 'DESC']);
 
-            $produto = $entityManager->getRepository('App\Entity\Produto')->find($produtoId);
-            
-            if (!$produto){
-                return self::view(['detail' => 'Produto não encontrado'], $response, 404);
-            }
+        $estoqueArray = array_map(function ($e) {
+            $produto = $e->getProduto();
+            return [
+                'id' => $e->getId(),
+                'quantidade' => $e->getQuantidade(),
+                'valor_unidade' => $e->getValorUnidade(),
+                'produto' => [
+                    'id' => $produto->getId(),
+                    'nome' => $produto->getNome()
+                ],
+            ];
+        }, $estoques);
 
-            $produto->setNome($params['nome']);
-            $produto->setDescricao($params['descricao']);
-            $produto->setValor($params['valor']);
-            $produto->setCodigoBarras($params['codigo_barras'] ?? null);
-
-            $entityManager->persist($produto);
-            $entityManager->flush();
-
-            return self::view(['id' => $produto->getId()], $response, 201);
-        } catch (Exception $e) {
-            return self::view(['error' => $e->getMessage()], $response, 409);
-        }
+        return self::view($estoqueArray, $response, 200);
     }
 
-    public function delete(ServerRequestInterface $request, ResponseInterface $response, $args)
+    public function findByProduct(ServerRequestInterface $request, ResponseInterface $response, array $args)
     {
         require_once __DIR__ . "/../../bootstrap.php";
 
-        try{
+        $estoqueRepository = $entityManager->getRepository('App\Entity\Estoque');
+        $estoques = $estoqueRepository->findBy(['produto' => $args['product_id']], ['id' => 'DESC']);
 
-            $produto = $entityManager->find('App\Entity\Produto', $args['id']);
-            
-            if (!$produto){
-                return self::view(['error' => 'Não foi encontrado o produto'], $response, 404);
-            }
+        $estoqueArray = array_map(function ($e) {
+            return [
+                'id' => $e->getId(),
+                'quantidade' => $e->getQuantidade(),
+                'valor_unidade' => $e->getValorUnidade()
+            ];
+        }, $estoques);
 
-            $entityManager->remove($produto);
-            $entityManager->flush();
-
-            return self::view([], $response, 204);
-        } catch(\Exception $e) {
-            return self::view(['error' => $e->getMessage()], $response, 400);
-        }
+        return self::view($estoqueArray, $response, 200);
     }
 }

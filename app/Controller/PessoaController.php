@@ -42,7 +42,7 @@ class PessoaController extends Controller
             $usuario->setUsuario($usuarioCompleto);
             $usuario->setSenha(password_hash($params['cpf'], PASSWORD_ARGON2I));
             $usuario->setPessoa($pessoa);
-            $usuario->setNivelAcesso(1);
+            $usuario->setNivelAcesso(2);
 
             $entityManager->persist($usuario);
             $entityManager->flush();

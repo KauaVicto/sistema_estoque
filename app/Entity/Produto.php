@@ -73,6 +73,17 @@ class Produto
         $this->codigo_barras = $codigo_barras;
     }
 
+    public function getQuantidade(): float
+    {
+        return $this->quantidade;
+    }
+    public function setNewQuantidade(float $quantidade)
+    {
+        if (is_numeric($quantidade)) {
+            $this->quantidade += $quantidade;
+        }
+    }
+
     public function produtoEstoque(Estoque $estoque)
     {
         $this->estoques[] = $estoque;

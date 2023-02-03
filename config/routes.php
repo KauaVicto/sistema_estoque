@@ -22,6 +22,16 @@ return function (App $app) {
         $group->put('/alterar/{id:[0-9]+}', 'App\Controller\ProdutoController:update')->setName('updateProduct');
 
         $group->delete('/deletar/{id:[0-9]+}', 'App\Controller\ProdutoController:delete')->setName('deleteProduct');
+
+
+        $group->get('/estoques/{product_id:[0-9]+}', 'App\Controller\EstoqueController:findByProduct')->setName('stocksFindByProduct');
+    });
+
+    $app->group('/estoque', function (RouteCollectorProxy $group) {
+
+        $group->get('', 'App\Controller\EstoqueController:showAll')->setName('showAllStock');
+
+        $group->post('/cadastrar', 'App\Controller\EstoqueController:insert')->setName('insertStock');
     });
 
     $app->group('/pessoa', function (RouteCollectorProxy $group) {

@@ -16,6 +16,9 @@ $container = $containerBuilder->build();
 // Create Slim App instance
 $app = $container->get(App::class);
 
+// Register authorizations
+(require __DIR__ . '/authorization.php');
+
 // Register routes
 (require __DIR__ . '/routes.php')($app);
 

@@ -35,11 +35,11 @@ class ProdutoController extends Controller
 
         $produto = $entityManager->find('App\Entity\Produto', $args['id']);
 
-        if (!is_null($produto)) {
-            $produtoArray = $produto->serialize();
-        } else {
-            $produtoArray = [];
+        if (!$produto) {
+            return self::view(['msg' => 'Produto não encontrado'], $response, 404);
         }
+
+        $produtoArray = $produto->serialize();
 
         return self::view($produtoArray, $response, 200);
     }
@@ -82,8 +82,8 @@ class ProdutoController extends Controller
             $produtoId = $args['id'];
 
             $produto = $entityManager->getRepository('App\Entity\Produto')->find($produtoId);
-            
-            if (!$produto){
+
+            if (!$produto) {
                 return self::view(['detail' => 'Produto não encontrado'], $response, 404);
             }
 
@@ -105,11 +105,11 @@ class ProdutoController extends Controller
     {
         require_once __DIR__ . "/../../bootstrap.php";
 
-        try{
+        try {
 
             $produto = $entityManager->find('App\Entity\Produto', $args['id']);
-            
-            if (!$produto){
+
+            if (!$produto) {
                 return self::view(['error' => 'Não foi encontrado o produto'], $response, 404);
             }
 
@@ -117,7 +117,7 @@ class ProdutoController extends Controller
             $entityManager->flush();
 
             return self::view([], $response, 204);
-        } catch(\Exception $e) {
+        } catch (\Exception $e) {
             return self::view(['error' => $e->getMessage()], $response, 400);
         }
     }

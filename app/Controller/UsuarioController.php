@@ -32,7 +32,7 @@ class UsuarioController extends Controller
                 return self::view(['msg' => 'SENHA INCORRETA'], $response, 401);
             }
 
-            $token = AuthJwt::generateToken($objUsuario->getId());
+            $token = AuthJwt::generateToken($objUsuario->getId(), $objUsuario->getNivelAcesso());
 
             return self::view([
                 'token' => $token
@@ -51,10 +51,44 @@ class UsuarioController extends Controller
 
         $tokenSimple = str_replace('Bearer ', '', $token);
 
-        if (AuthJwt::validateToken($tokenSimple)) {
-            return self::view(['msg' => 'O usuário está logado'], $response, 200);
-        } else {
+        $payload = AuthJwt::validateToken($tokenSimple);
+
+        if (!$payload){
             return self::view(['msg' => 'Token inválido'], $response, 401);
+        }
+
+        if (is_object($payload)) {
+            return self::view(['role' => $payload->role], $response, 200);
+        }
+    }
+
+    public function update(ServerRequestInterface $request, ResponseInterface $response)
+    {
+        require_once __DIR__ . "/../../bootstrap.php";
+
+        try {
+            $params = $request->getParsedBody();
+            $usuarioId = $args['id'];
+
+            $usuario = $entityManager->getRepository('App\Entity\Usuario')->find($usuarioId);
+            
+            if (!$usuario){
+                return self::view(['detail' => 'Usuário não encontrado'], $response, 404);
+            }
+            
+            if (!password_verify($params['senha_antiga'], $usuario->getSenha())){
+                return self::view(['detail' => 'Senha antiga incorreta'], $response, 404);
+            }
+
+            $usuario->setUsuario($params['usuario']);
+            $usuario->setSenha(password_hash($params['senha'], PASSWORD_ARGON2I));
+
+            $entityManager->persist($usuario);
+            $entityManager->flush();
+
+            return self::view(['id' => $usuario->getId()], $response, 201);
+        } catch (Exception $e) {
+            return self::view(['error' => $e->getMessage()], $response, 409);
         }
     }
 }

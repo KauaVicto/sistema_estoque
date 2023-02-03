@@ -14,13 +14,14 @@ class AuthJwt
      * 
      * @return string
      */
-    public static function generateToken($userId)
+    public static function generateToken($userId, $role)
     {
         $key = $_ENV['SECRET_KEY'];
 
         $payload = [
-            'iss' => 'http://sistemaestoque.com.br',
+            'iss' => $_ENV['URL'],
             'sub' => $userId,
+            'role' => $role,
             'iat' => time(),
             'exp' => time() + (60 * 60)
         ];
@@ -33,13 +34,13 @@ class AuthJwt
      * 
      * @return boolean
      */
-    public static function validateToken($token)
+    public static function validateToken($token):object|bool
     {
         $key = $_ENV['SECRET_KEY'];
 
         try {
             $decoded = JWT::decode($token, $key, ['HS256']);
-            return true;
+            return $decoded;
         } catch (\Exception $e) {
             return false;
         }
