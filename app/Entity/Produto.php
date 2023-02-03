@@ -1,6 +1,7 @@
 <?php
 namespace App\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity]
@@ -24,6 +25,15 @@ class Produto
     private float $quantidade = 0;
 
     private array $estoques;
+
+    #[ORM\OneToMany(targetEntity: VendaProduto::class, mappedBy: 'produto')]
+    private ArrayCollection $vendas;
+
+    public function __construct()
+    {
+        $this->vendas = new ArrayCollection();
+    }
+
 
     
     public function getId()
