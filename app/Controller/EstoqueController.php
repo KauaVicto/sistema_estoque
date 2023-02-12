@@ -25,9 +25,9 @@ class EstoqueController extends Controller
 
             $estoque = new \App\Entity\Estoque();
             $estoque->setQuantidade($params['quantidade']);
-            $estoque->setValorUnidade($params['valor']);
+            $estoque->setValorUnidade($params['valor_unidade']);
             $estoque->setProduto($produto);
-            $produto->setNewQuantidade($params['quantidade']);
+            $produto->addQuantidade($params['quantidade']);
 
             $entityManager->persist($estoque);
             $entityManager->flush();

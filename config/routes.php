@@ -37,4 +37,9 @@ return function (App $app) {
     $app->group('/pessoa', function (RouteCollectorProxy $group) {
         $group->post('/cadastrar', 'App\Controller\PessoaController:insert')->setName('insertPerson');
     });
+
+    $app->group('/venda', function (RouteCollectorProxy $group) {
+        $group->post('/cadastrar', 'App\Controller\VendaController:insert')->setName('insertSale');
+        $group->post('/inserir_produto', 'App\Controller\VendaController:insertProduct')->setName('insertProductSale');
+    });
 };

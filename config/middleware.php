@@ -3,13 +3,13 @@
 use Nyholm\Psr7\Response;
 use Slim\App;
 use Slim\Routing\RouteContext;
+use Tuupola\Middleware\CorsMiddleware;
 use App\Autentication\AuthJwt;
 
 return function (App $app) {
 
     // auth jwt
     $app->add(function ($request, $handler) {
-
 
         $routeContext = RouteContext::fromRequest($request);
         $route = $routeContext->getRoute();
@@ -42,16 +42,9 @@ return function (App $app) {
     });
 
     // define cors
-    $app->add(function ($request, $handler) {
 
-        $response = $handler->handle($request);
-        $response->withHeader('Access-Control-Allow-Origin', '*')
-            ->withHeader('Access-Control-Allow-Headers', 'X-Requested-With, Content-Type, Accept, Origin, Authorization')
-            ->withHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, PATCH, OPTIONS');
-
-        return $response;
-    });
-
+    
+    
     // Parse json, form data and xml
     $app->addBodyParsingMiddleware();
 
@@ -60,4 +53,13 @@ return function (App $app) {
 
     // Handle exceptions
     $app->addErrorMiddleware(true, true, true);
+
+
+    $app->add(function ($request, $handler) {
+        $response = $handler->handle($request);
+        return $response
+            ->withHeader('Access-Control-Allow-Origin', '*')
+            ->withHeader('Access-Control-Allow-Headers', 'X-Requested-With, Content-Type, Accept, Origin, Authorization')
+            ->withHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, PATCH, OPTIONS');
+    });
 };

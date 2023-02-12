@@ -13,6 +13,8 @@ define('ROUTES_AUTHORIZATION', [
         'showAllStock',
         'stocksFindByProduct',
         'insertPerson',
+        'insertSale',
+        'insertProductSale'
     ],
     3 => [
         'listAllProducts',
@@ -23,6 +25,8 @@ define('ROUTES_AUTHORIZATION', [
         'insertStock',
         'showAllStock',
         'stocksFindByProduct',
+        'insertSale',
+        'insertProductSale'
     ],
     4 => [
         'listAllProducts',

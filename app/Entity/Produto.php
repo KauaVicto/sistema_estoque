@@ -1,7 +1,7 @@
 <?php
 namespace App\Entity;
 
-use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\ORM\PersistentCollection;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity]
@@ -27,14 +27,9 @@ class Produto
     private array $estoques;
 
     #[ORM\OneToMany(targetEntity: VendaProduto::class, mappedBy: 'produto')]
-    private ArrayCollection $vendas;
+    private PersistentCollection $vendas;
 
-    public function __construct()
-    {
-        $this->vendas = new ArrayCollection();
-    }
-
-
+    
     
     public function getId()
     {
@@ -87,10 +82,20 @@ class Produto
     {
         return $this->quantidade;
     }
-    public function setNewQuantidade(float $quantidade)
+    public function addQuantidade(float $quantidade)
     {
         if (is_numeric($quantidade)) {
             $this->quantidade += $quantidade;
+        }
+    }
+    public function removeQuantidade(float $quantidade)
+    {
+        if (is_numeric($quantidade)) {
+            if ($quantidade <= $this->quantidade){
+                $this->quantidade -= $quantidade;
+            }else{
+                $this->quantidade = 0;
+            }
         }
     }
 
