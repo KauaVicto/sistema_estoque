@@ -1,9 +1,24 @@
-import { createRouter, createWebHashHistory } from 'vue-router'
-import routes from './routes'
+import { createRouter, createWebHistory } from 'vue-router'
+import { middlewares } from '../middlewares';
 
+
+const routes = [
+  {
+    path: '/login',
+    name: 'login',
+    component: () => import(/* webpackChunkName: "login" */ '../views/LoginView'),
+    beforeEnter: middlewares.LoginMiddleware
+  },
+  {
+    path: '/',
+    name: 'home',
+    component: () => import(/* webpackChunkName: "home" */ '../views/HomeView'),
+    beforeEnter: middlewares.AuthMiddleware
+  },
+]
 
 const router = createRouter({
-  history: createWebHashHistory(),
+  history: createWebHistory(process.env.BASE_URL),
   routes
 })
 

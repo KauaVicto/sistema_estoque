@@ -1,7 +1,4 @@
 <template>
-  <router-view/>
+  <div class="background"></div>
+  <router-view id="content" />
 </template>
-
-<style lang="scss">
-
-</style>
