@@ -1,2 +1,2 @@
 # sistema_estoque
-Sistema completo de estoque e vendas
+Sistema completo de estoque e vendas!
